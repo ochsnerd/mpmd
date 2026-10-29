@@ -1,34 +1,44 @@
-# Development
+# mpmd
 
-Your new jumpstart project includes basic organization with an organized `assets` folder and a `components` folder.
-If you chose to develop with the router feature, you will also have a `views` folder.
+A [Dioxus](https://dioxuslabs.com) 0.7 fullstack web app (Rust + WebAssembly).
 
-```
-project/
-├─ assets/ # Any assets that are used by the app should be placed here
-├─ src/
-│  ├─ main.rs # The entrypoint for the app. It also defines the routes for the app.
-│  ├─ components/
-│  │  ├─ mod.rs # Defines the components module
-│  │  ├─ hero.rs # The Hero component for use in the home page
-│  │  ├─ echo.rs # The echo component uses server functions to communicate with the server
-│  ├─ views/ # The views each route will render in the app.
-│  │  ├─ mod.rs # Defines the module for the views route and re-exports the components for each route
-│  │  ├─ blog.rs # The component that will render at the /blog/:id route
-│  │  ├─ home.rs # The component that will render at the / route
-├─ Cargo.toml # The Cargo.toml file defines the dependencies and feature flags for your project
-```
+## Dev environment (Nix flake)
 
-### Serving Your App
+`flake.nix` provides a dev shell with:
 
-Run the following command in the root of your project to start developing with the default platform:
+- Rust stable (via `rust-overlay`), including the `wasm32-unknown-unknown` target, `rust-src` and `rust-analyzer`
+- `dx` (dioxus-cli)
+- `wasm-bindgen-cli`, `binaryen`, `pkg-config`, `openssl`
 
-```bash
-dx serve --platform web
+Versions are pinned by `flake.lock` (currently Rust 1.99.1, dx 0.7.10).
+
+With direnv, the shell loads automatically when you `cd` into the project (`.envrc` contains `use flake`; run `direnv allow` once). Without direnv:
+
+```sh
+nix develop
 ```
 
-To run for a different platform, use the `--platform platform` flag. E.g.
-```bash
-dx serve --platform desktop
+Update the pinned toolchain with `nix flake update`.
+
+## Dioxus commands
+
+```sh
+dx serve                      # dev server with hot reload (http://localhost:8080)
+dx build --platform web       # debug build into target/dx/
+dx bundle --web --release     # optimized release bundle (server + public/)
+dx fmt                        # format rsx! blocks
+dx check                      # lint rsx! blocks
 ```
 
+The server bundle ends up in `target/dx/mpmd/release/web/`.
+
+## Docker
+
+The `Dockerfile` follows the [official Dioxus deploy guide](https://dioxuslabs.com/learn/0.7/tutorial/deploy). It pins Rust 1.99.1 and dx 0.7.10 to match the flake.
+
+```sh
+docker build -t mpmd .
+docker run --rm -p 8080:8080 mpmd
+```
+
+Then open http://localhost:8080. The server reads `IP` and `PORT` from the environment (defaults in the image: `0.0.0.0`, `8080`).
