@@ -32,6 +32,7 @@
             pkgs.binaryen
             pkgs.pkg-config
             pkgs.openssl
+            pkgs.just
           ];
         };
       });

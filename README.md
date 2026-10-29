@@ -4,13 +4,7 @@ A [Dioxus](https://dioxuslabs.com) 0.7 fullstack web app (Rust + WebAssembly).
 
 ## Dev environment (Nix flake)
 
-`flake.nix` provides a dev shell with:
-
-- Rust stable (via `rust-overlay`), including the `wasm32-unknown-unknown` target, `rust-src` and `rust-analyzer`
-- `dx` (dioxus-cli)
-- `wasm-bindgen-cli`, `binaryen`, `pkg-config`, `openssl`
-
-Versions are pinned by `flake.lock` (currently Rust 1.99.1, dx 0.7.10).
+`flake.nix` provides a dev shell with (read the flake).
 
 With direnv, the shell loads automatically when you `cd` into the project (`.envrc` contains `use flake`; run `direnv allow` once). Without direnv:
 
@@ -31,6 +25,15 @@ dx check                      # lint rsx! blocks
 ```
 
 The server bundle ends up in `target/dx/mpmd/release/web/`.
+
+## Formatting & linting
+
+```sh
+just fix     # format (rustfmt + rsx), apply clippy fixes, run dx check
+just check   # same checks without modifying files; fails on warnings (for CI)
+```
+
+Clippy runs twice: once for the web client (`wasm32-unknown-unknown`) and once for the server (`--features server`).
 
 ## Docker
 
