@@ -13,7 +13,7 @@
 }
 
 
-#echo>input {
+#echo input {
   border: none;
   border-bottom: 1px white solid;
   background-color: transparent;
@@ -25,7 +25,7 @@
   width: 100%;
 }
 
-#echo>input:focus {
+#echo input:focus {
   border-bottom-color: #6d85c6;
 }
 
